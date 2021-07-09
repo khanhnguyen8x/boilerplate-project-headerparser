@@ -26,7 +26,10 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/whoami", function (req, res) {
   var os = require('os');
-  var address = req.ip;
+  var ip = req.headers['x-forwarded-for'] ||
+      req.socket.remoteAddress ||
+      req.connection.remoteAddress ||
+      null;
   var language = req.headers["accept-language"];
   var software = req.headers["user-agent"];
 
@@ -36,7 +39,7 @@ app.get("/api/whoami", function (req, res) {
   console.log("Language: " + req.headers["accept-language"]);
 
   res.json({
-    "ipaddress": address, "language": language,
+    "ipaddress": ip, "language": language,
     "software": software
   });
 });
